@@ -44,15 +44,15 @@ threading = add_library(
     link_flags_public=['-pthread'],
 )
 
-mem = add_library(
+mem = add_interface_library(
     name='mem',
-    sources=[],
+    # sources=[],
     # header_namespace='',
     # visibility=['PUBLIC'],
     # exported_headers=subdir_glob([
     #     ('common', 'mem.h'),
     # ]),
-    include_dirs_public=['zstd-1.5.5/lib/common'],
+    include_dirs=['zstd-1.5.5/lib/common'],
 )
 
 errors = add_library(
@@ -67,26 +67,26 @@ errors = add_library(
     sources=['zstd-1.5.5/lib/common/error_private.c'],
 )
 
-bitstream = add_library(
+bitstream = add_interface_library(
     name='bitstream',
-    sources=[],
+    # sources=[],
     # header_namespace='',
     # visibility=['PUBLIC'],
     # exported_headers=subdir_glob([
     #     ('common', 'bitstream.h'),
     # ]),
-    include_dirs_public=['zstd-1.5.5/lib/common'],
+    include_dirs=['zstd-1.5.5/lib/common'],
 )
 
-compiler = add_library(
+compiler = add_interface_library(
     name='compiler',
-    sources=[],
+    # sources=[],
     # header_namespace='',
     # visibility=['PUBLIC'],
     # exported_headers=subdir_glob([
     #     ('common', 'compiler.h'),
     # ]),
-    include_dirs_public=['zstd-1.5.5/lib/common'],
+    include_dirs=['zstd-1.5.5/lib/common'],
 )
 
 entropy = add_library(
@@ -115,15 +115,15 @@ entropy = add_library(
     link_private=[debug, bitstream, compiler, errors, mem],
 )
 
-cpu = add_library(
+cpu = add_interface_library(
     name='cpu',
-    sources=[],
+    # sources=[],
     # header_namespace='',
     # visibility=['PUBLIC'],
     # exported_headers=subdir_glob([
     #     ('common', 'cpu.h'),
     # ]),
-    include_dirs_public=['zstd-1.5.5/lib/common']
+    include_dirs=['zstd-1.5.5/lib/common']
 )
 
 zstd_common = add_library(
@@ -160,9 +160,9 @@ pool = add_library(
     link_private=[threading, zstd_common],
 )
 
-common = add_library(
+common = add_interface_library(
     name='common',
-    sources=[],
+    # sources=[],
     # deps=[
     #     ':debug',
     #     ':bitstream',
@@ -176,7 +176,7 @@ common = add_library(
     #     ':xxhash',
     #     ':zstd_common',
     # ]
-    link_private=[debug, bitstream, compiler, cpu, entropy, errors, mem, pool, threading, xxhash, zstd_common]
+    link=[debug, bitstream, compiler, cpu, entropy, errors, mem, pool, threading, xxhash, zstd_common]
 )
 
 zdict = add_library(
@@ -288,12 +288,12 @@ compress = add_library(
     link_private=[common],
 )
 
-zstd = add_library(
+zstd = add_interface_library(
     name='zstd',
-    sources=[],
+    # sources=[],
     # header_namespace='',
     # exported_headers=['zstd.h'],
-    include_dirs_public=['zstd-1.5.5/lib'],
+    include_dirs=['zstd-1.5.5/lib'],
     # visibility=['PUBLIC'],
     # deps=[
     #     ':common',
@@ -301,5 +301,5 @@ zstd = add_library(
     #     ':decompress',
     #     ':deprecated',
     # ],
-    link_private=[common, compress, decompress, deprecated],
+    link=[common, compress, decompress, deprecated],
 )
