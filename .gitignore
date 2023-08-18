@@ -17,3 +17,6 @@ catapult-server
 go.work
 
 .DS_Store
+
+# Generated databse
+data.sqlite
