@@ -1,0 +1,304 @@
+debug = add_library(
+    name='debug',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'debug.h'),
+    # ]),
+    include_dirs_public=['lib/common'],
+    sources=['lib/common/debug.c'],
+)
+
+xxhash = add_library(
+    name='xxhash',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'xxhash.h'),
+    # ]),
+    include_dirs_public=['lib/common'],
+    sources=['lib/common/xxhash.c'],
+    # exported_preprocessor_flags=[
+    #     '-DXXH_NAMESPACE=ZSTD_',
+    # ],
+    defines_public=['XXH_NAMESPACE=ZSTD_'],
+)
+
+threading = add_library(
+    name='threading',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'threading.h'),
+    # ]),
+    include_dirs_public=['lib/common'],
+    sources=['lib/common/threading.c'],
+    # exported_preprocessor_flags=[
+    #     '-DZSTD_MULTITHREAD',
+    # ],
+    defines_public=['ZSTD_MULTITHREAD'],
+    # exported_linker_flags=[
+    #     '-pthread',
+    # ],
+    link_flags_public=['-pthread'],
+)
+
+mem = add_interface_library(
+    name='mem',
+    # sources=[],
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'mem.h'),
+    # ]),
+    include_dirs=['lib/common'],
+)
+
+errors = add_library(
+    name='errors',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=[
+    #     'zstd_errors.h',
+    #     'common/error_private.h',
+    # ]
+    include_dirs_public=['lib', 'lib/common'],
+    sources=['lib/common/error_private.c'],
+)
+
+bitstream = add_interface_library(
+    name='bitstream',
+    # sources=[],
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'bitstream.h'),
+    # ]),
+    include_dirs=['lib/common'],
+)
+
+compiler = add_interface_library(
+    name='compiler',
+    # sources=[],
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'compiler.h'),
+    # ]),
+    include_dirs=['lib/common'],
+)
+
+entropy = add_library(
+    name='entropy',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'fse.h'),
+    #     ('common', 'huf.h'),
+    # ]),
+    include_dirs_public=['lib/common'],
+    sources=[
+        'lib/common/entropy_common.c',
+        'lib/common/fse_decompress.c',
+        'lib/compress/fse_compress.c',
+        'lib/compress/huf_compress.c',
+        'lib/decompress/huf_decompress.c',
+    ],
+    # deps=[
+    #     ':debug',
+    #     ':bitstream',
+    #     ':compiler',
+    #     ':errors',
+    #     ':mem',
+    # ],
+    link_private=[debug, bitstream, compiler, errors, mem],
+)
+
+cpu = add_interface_library(
+    name='cpu',
+    # sources=[],
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'cpu.h'),
+    # ]),
+    include_dirs=['lib/common']
+)
+
+zstd_common = add_library(
+    name='zstd_common',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('', 'zstd.h'),
+    #     ('common', 'zstd_internal.h'),
+    # ]),
+    include_dirs_public=['lib', 'lib/common'],
+    sources=['lib/common/zstd_common.c'],
+    # deps=[
+    #     ':compiler',
+    #     ':errors',
+    #     ':mem',
+    # ],
+    link_private=[compiler, errors, mem],
+)
+
+pool = add_library(
+    name='pool',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('common', 'pool.h'),
+    # ]),
+    include_dirs_public=['lib/common'],
+    sources=['lib/common/pool.c'],
+    # deps=[
+    #     ':threading',
+    #     ':zstd_common',
+    # ],
+    link_private=[threading, zstd_common],
+)
+
+common = add_interface_library(
+    name='common',
+    # sources=[],
+    # deps=[
+    #     ':debug',
+    #     ':bitstream',
+    #     ':compiler',
+    #     ':cpu',
+    #     ':entropy',
+    #     ':errors',
+    #     ':mem',
+    #     ':pool',
+    #     ':threading',
+    #     ':xxhash',
+    #     ':zstd_common',
+    # ]
+    link=[debug, bitstream, compiler, cpu, entropy, errors, mem, pool, threading, xxhash, zstd_common]
+)
+
+zdict = add_library(
+    name='zdict',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=['zdict.h'],
+    include_dirs_public=['lib'],
+    # headers=subdir_glob([
+    #     ('dictBuilder', 'divsufsort.h'),
+    #     ('dictBuilder', 'cover.h'),
+    # ]),
+    include_dirs_private=['lib/dictBuilder'],
+    # srcs=glob(['dictBuilder/*.c']),
+    sources=[
+        'lib/dictBuilder/cover.c',
+        'lib/dictBuilder/divsufsort.c',
+        'lib/dictBuilder/fastcover.c',
+        'lib/dictBuilder/zdict.c',
+    ],
+    # deps=[':common'],
+    link_private=[common],
+)
+
+legacy = add_library(
+    name='legacy',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('legacy', '*.h'),
+    # ]),
+    include_dirs_public=['lib/legacy'],
+    # srcs=glob(['legacy/*.c']),
+    sources=[
+        'lib/legacy/zstd_v01.c',
+        'lib/legacy/zstd_v02.c',
+        'lib/legacy/zstd_v03.c',
+        'lib/legacy/zstd_v04.c',
+        'lib/legacy/zstd_v05.c',
+        'lib/legacy/zstd_v06.c',
+        'lib/legacy/zstd_v07.c',
+    ],
+    # deps=[':common'],
+    link_private=[common],
+    # exported_preprocessor_flags=[
+    #     '-DZSTD_LEGACY_SUPPORT=4',
+    # ],
+    defines_public=['ZSTD_LEGACY_SUPPORT=4'],
+)
+
+deprecated = add_library(
+    name='deprecated',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=subdir_glob([
+    #     ('deprecated', '*.h'),
+    # ]),
+    include_dirs_public=['lib/deprecated'],
+    # srcs=glob(['deprecated/*.c']),
+    sources=[
+        'lib/deprecated/zbuff_common.c',
+        'lib/deprecated/zbuff_compress.c',
+        'lib/deprecated/zbuff_decompress.c',
+    ],
+    # deps=[':common'],
+    link_private=[common],
+)
+
+decompress = add_library(
+    name='decompress',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # headers=glob(['lib/decompress/*_impl.h']),
+    include_dirs_private=['lib/decompress'],
+    # srcs=glob(['decompress/zstd*.c']),
+    sources=[
+        'lib/decompress/zstd_ddict.c',
+        'lib/decompress/zstd_decompress_block.c',
+        'lib/decompress/zstd_decompress.c',
+    ],
+    # deps=[
+    #     ':common',
+    #     ':legacy',
+    # ],
+    link_private=[common, legacy],
+)
+
+compress = add_library(
+    name='compress',
+    # header_namespace='',
+    # visibility=['PUBLIC'],
+    # exported_headers=lob(['lib/compress/zstd*.h']),
+    include_dirs_public=['lib/compress'],
+    # srcs=glob(['lib/compress/zstd*.c', 'lib/compress/hist.c']),
+    sources=[
+        'lib/compress/hist.c',
+        'lib/compress/zstd_compress.c',
+        'lib/compress/zstd_compress_literals.c',
+        'lib/compress/zstd_compress_sequences.c',
+        'lib/compress/zstd_compress_superblock.c',
+        'lib/compress/zstd_double_fast.c',
+        'lib/compress/zstd_fast.c',
+        'lib/compress/zstd_lazy.c',
+        'lib/compress/zstd_ldm.c',
+        'lib/compress/zstdmt_compress.c',
+        'lib/compress/zstd_opt.c',
+    ],
+    # deps=[':common'],
+    link_private=[common],
+)
+
+zstd = add_interface_library(
+    name='zstd',
+    # sources=[],
+    # header_namespace='',
+    # exported_headers=['zstd.h'],
+    include_dirs=['lib'],
+    # visibility=['PUBLIC'],
+    # deps=[
+    #     ':common',
+    #     ':compress',
+    #     ':decompress',
+    #     ':deprecated',
+    # ],
+    link=[common, compress, decompress, deprecated],
+)

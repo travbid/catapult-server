@@ -1,0 +1,11 @@
+[
+	{
+		"pkg_name": "zstd",
+		"version": "1.5.5",
+		"user": "travbid",
+		"channel": "main",
+		"manifest": "travbid/main/zstd-1.5.5.toml",
+		"recipe": "travbid/main/zstd-1.5.5.catapult",
+		"datetime_added": 1687685616000
+	}
+]
