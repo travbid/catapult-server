@@ -1,5 +1,5 @@
 
-debug = add_library(
+debug = add_static_library(
     name='debug',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -10,7 +10,7 @@ debug = add_library(
     sources=['zstd-1.5.5/lib/common/debug.c'],
 )
 
-xxhash = add_library(
+xxhash = add_static_library(
     name='xxhash',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -25,7 +25,7 @@ xxhash = add_library(
     defines_public=['XXH_NAMESPACE=ZSTD_'],
 )
 
-threading = add_library(
+threading = add_static_library(
     name='threading',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -55,7 +55,7 @@ mem = add_interface_library(
     include_dirs=['zstd-1.5.5/lib/common'],
 )
 
-errors = add_library(
+errors = add_static_library(
     name='errors',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -89,7 +89,7 @@ compiler = add_interface_library(
     include_dirs=['zstd-1.5.5/lib/common'],
 )
 
-entropy = add_library(
+entropy = add_static_library(
     name='entropy',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -126,7 +126,7 @@ cpu = add_interface_library(
     include_dirs=['zstd-1.5.5/lib/common']
 )
 
-zstd_common = add_library(
+zstd_common = add_static_library(
     name='zstd_common',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -144,7 +144,7 @@ zstd_common = add_library(
     link_private=[compiler, errors, mem],
 )
 
-pool = add_library(
+pool = add_static_library(
     name='pool',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -179,7 +179,7 @@ common = add_interface_library(
     link=[debug, bitstream, compiler, cpu, entropy, errors, mem, pool, threading, xxhash, zstd_common]
 )
 
-zdict = add_library(
+zdict = add_static_library(
     name='zdict',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -201,7 +201,7 @@ zdict = add_library(
     link_private=[common],
 )
 
-legacy = add_library(
+legacy = add_static_library(
     name='legacy',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -227,7 +227,7 @@ legacy = add_library(
     defines_public=['ZSTD_LEGACY_SUPPORT=4'],
 )
 
-deprecated = add_library(
+deprecated = add_static_library(
     name='deprecated',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -245,7 +245,7 @@ deprecated = add_library(
     link_private=[common],
 )
 
-decompress = add_library(
+decompress = add_static_library(
     name='decompress',
     # header_namespace='',
     # visibility=['PUBLIC'],
@@ -264,7 +264,7 @@ decompress = add_library(
     link_private=[common, legacy],
 )
 
-compress = add_library(
+compress = add_static_library(
     name='compress',
     # header_namespace='',
     # visibility=['PUBLIC'],
