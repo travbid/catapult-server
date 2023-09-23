@@ -1,0 +1,4 @@
+[package]
+name = "icu"
+version = "73-2"
+source = "https://github.com/unicode-org/icu/archive/refs/tags/release-73-2.tar.gz"
