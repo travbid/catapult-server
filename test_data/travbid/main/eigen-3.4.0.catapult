@@ -1,7 +1,7 @@
 
 eigen = add_interface_library(
     name = 'eigen',
-    include_dirs = ['eigen-3.4.0/'],
+    include_dirs = ['eigen-3.4.0'],
     link = []
 )
 
