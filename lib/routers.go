@@ -40,8 +40,16 @@ type packageRecord struct {
 	DatetimeAddedMs int64  `json:"datetime_added"`
 }
 
+type listItem struct {
+	PkgName string `json:"pkg_name"`
+	User    string `json:"user"`
+	Channel string `json:"channel"`
+	Version string `json:"version"`
+	Hash    string `json:"hash"`
+}
+
 func (r *Router) listPackages(w http.ResponseWriter, req *http.Request) {
-	const query = "SELECT * FROM Packages"
+	const query = "SELECT pkg_name, user, channel, version, hash FROM Packages"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		log.Println("func listPackages : Query error :", err.Error())
@@ -50,17 +58,15 @@ func (r *Router) listPackages(w http.ResponseWriter, req *http.Request) {
 	}
 	defer rows.Close()
 
-	items := []packageRecord{}
+	items := []listItem{}
 	for rows.Next() {
-		record := packageRecord{}
-		err = rows.Scan(&record.PkgName, &record.Version, &record.Hash, &record.Manifest, &record.Recipe, &record.DatetimeAddedMs)
+		record := listItem{}
+		err = rows.Scan(&record.PkgName, &record.User, &record.Channel, &record.Version, &record.Hash)
 		if err != nil {
 			log.Println("func listPackages : Scan error :", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		record.Manifest = base64.RawStdEncoding.EncodeToString([]byte(record.Manifest))
-		record.Recipe = base64.RawStdEncoding.EncodeToString([]byte(record.Recipe))
 		items = append(items, record)
 	}
 	jbytes, err := json.MarshalIndent(items, "", "   ")
