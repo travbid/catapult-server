@@ -1,5 +1,14 @@
 [
   {
+    "pkg_name": "eigen",
+    "version": "3.4.0",
+    "user": "travbid",
+    "channel": "main",
+    "manifest": "travbid/main/eigen-3.4.0.toml",
+    "recipe": "travbid/main/eigen-3.4.0.catapult",
+    "datetime_added": 1704080459000
+  },
+  {
     "pkg_name": "icu",
     "version": "73-2",
     "user": "travbid",

@@ -1,0 +1,51 @@
+
+eigen = add_interface_library(
+    name = 'eigen',
+    include_dirs = ['eigen-3.4.0/'],
+    link = []
+)
+
+blas = add_static_library(
+    name = 'blas',
+    include_dirs_private = ['eigen-3.4.0/blas'],
+    sources = [
+        'eigen-3.4.0/blas/complex_single.cpp',
+        'eigen-3.4.0/blas/complex_double.cpp',
+        'eigen-3.4.0/blas/double.cpp',
+        'eigen-3.4.0/blas/single.cpp',
+        'eigen-3.4.0/blas/xerbla.cpp',
+        'eigen-3.4.0/blas/f2c/chbmv.c',
+        'eigen-3.4.0/blas/f2c/chpmv.c',
+        'eigen-3.4.0/blas/f2c/complexdots.c',
+        'eigen-3.4.0/blas/f2c/ctbmv.c',
+        'eigen-3.4.0/blas/f2c/drotm.c',
+        'eigen-3.4.0/blas/f2c/drotmg.c',
+        'eigen-3.4.0/blas/f2c/dsbmv.c',
+        'eigen-3.4.0/blas/f2c/dspmv.c',
+        'eigen-3.4.0/blas/f2c/dtbmv.c',
+        'eigen-3.4.0/blas/f2c/d_cnjg.c',
+        'eigen-3.4.0/blas/f2c/lsame.c',
+        'eigen-3.4.0/blas/f2c/r_cnjg.c',
+        'eigen-3.4.0/blas/f2c/srotm.c',
+        'eigen-3.4.0/blas/f2c/srotmg.c',
+        'eigen-3.4.0/blas/f2c/ssbmv.c',
+        'eigen-3.4.0/blas/f2c/sspmv.c',
+        'eigen-3.4.0/blas/f2c/stbmv.c',
+        'eigen-3.4.0/blas/f2c/zhbmv.c',
+        'eigen-3.4.0/blas/f2c/zhpmv.c',
+        'eigen-3.4.0/blas/f2c/ztbmv.c',
+    ],
+)
+
+lapack = add_static_library(
+    name = 'lapack',
+    include_dirs_private = ['eigen-3.4.0/lapack'],
+    link_private = [eigen],
+    sources = [
+        'eigen-3.4.0/lapack/single.cpp',
+        'eigen-3.4.0/lapack/double.cpp',
+        'eigen-3.4.0/lapack/complex_single.cpp',
+        'eigen-3.4.0/lapack/complex_double.cpp',
+        # 'eigen-3.4.0/lapack/../blas/xerbla.cpp',
+    ],
+)
