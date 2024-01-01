@@ -131,7 +131,7 @@ func (r *Router) getPackage(w http.ResponseWriter, req *http.Request) {
 	pkgRecord := items[0]
 	jbytes, err := json.MarshalIndent(pkgRecord, "", "   ")
 	if err != nil {
-		log.Println("func listPackages : Marshal error :", err.Error())
+		log.Println("func getPackage : Marshal error :", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -139,7 +139,7 @@ func (r *Router) getPackage(w http.ResponseWriter, req *http.Request) {
 	for numBytesWritten < len(jbytes) {
 		n, err := w.Write(jbytes[numBytesWritten:])
 		if err != nil {
-			log.Println("func listPackages : Write error :", err.Error())
+			log.Println("func getPackage : Write error :", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
